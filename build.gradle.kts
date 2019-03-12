@@ -1,0 +1,133 @@
+//
+//
+//// ForgeGradle tries to pull in typesafe config 1.2.1,
+//// which causes issues when running Sponge from Intellij.
+//// We force Gradle to use 1.3.1, which resolves the issue
+//configurations.all {
+//    resolutionStrategy {
+//        force 'com.typesafe:config:1.3.1'
+//    }
+//}
+//
+//// On Forge, we use the Forge build number as Minecraft version for ForgeGradle
+//
+//ext.minecraftVersion = forgeVersion + '.' + forgeBuild
+//ext.testmods = project.project('testmods')
+//ext.implementationId = "spongeforge"
+//
+//// Apply shared implementation Gradle config
+//apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
+//
+//version = "$minecraft.version-$forgeBuild-$implementationVersion"
+//minecraft {
+//    coreMod = 'org.spongepowered.mod.SpongeCoremod'
+//    replace '@expected_certificate_fingerprint@', project.hasProperty('spongeCertificateFingerprint') ? project.property('spongeCertificateFingerprint') : ''
+//}
+//
+//sponge.plugin.meta {
+//    dependencies {
+//        forge {
+//            version = forgeVersion + '.' + forgeBuild
+//        }
+//    }
+//}
+//
+//dependencies {
+//    runtime testmods
+//}
+//
+//compileJava {
+//    options.compilerArgs += [ "-Atokens=FORGE=$forgeBuild;FML=$forgeBuild" ]
+//}
+//
+//if (project.hasProperty('spongeKeyStore')) {
+//    task signShadowJar(type: SignJar, dependsOn: reobfJar) {
+//        keyStore = project.spongeKeyStore
+//        alias = project.spongeKeyStoreAlias
+//        storePass = project.spongeKeyStorePass
+//        keyPass = project.spongeKeyStoreKeyPass
+//        inputFile = shadowJar.archivePath
+//        outputFile = shadowJar.archivePath
+//    }
+//
+//    signShadowJar.dependsOn shadowJar
+//            build.dependsOn signShadowJar
+//}
+//
+//jar {
+//    exclude 'log4j2.xml' // log4j2 configuration is for the development workspace only
+//
+//    manifest {
+//        attributes(
+//                'Main-Class': 'org.spongepowered.launch.Main',
+//        'TargetForgeBuild': forgeBuild,
+//        'TargetForgeVersion': minecraft.forgeVersion,
+//        'FMLCorePlugin': 'org.spongepowered.mod.SpongeCoremod',
+//        'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+//        'TweakOrder': 0
+//        )
+//    }
+//}
+//
+//import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+//
+//        task shadowDevJar(type: ShadowJar) {
+//    classifier = 'dev-shaded'
+//
+//    from sourceSets.main.output
+//            from sourceSets.java6.output
+//
+//            // Default settings for shadow tasks
+//            configurations = [project.configurations.runtime]
+//    manifest.inheritFrom tasks.jar.manifest
+//            exclude 'META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+//}
+//
+//shadowDevJar shadowConfiguration
+//
+//// Upload shadowDevJar to Maven repository
+//        artifacts {
+//            archives shadowDevJar
+//        }
+//
+//allprojects {
+//    // Re-obfuscate only after creating the shadowDevJar
+//    tasks.findByName('reobfJar')?.mustRunAfter this.tasks.shadowDevJar
+//}
+//
+//tasks.withType(ShadowJar) {
+//    exclude 'log4j2*.xml' // log4j2 configuration is for the development workspace only
+//
+//    // Temporarily relocate and shade to avoid confict with forge. TODO: Remove when Forge updates to 1.3.0
+//    relocate('com.typesafe.config', 'configurate.typesafe.config')
+//
+//    dependencies {
+//        exclude project(testmods.path)
+//
+//        include dependency('com.typesafe:config')
+//
+//        // This is not available on the client so we need to shade it
+//        include dependency('com.google.code.findbugs:jsr305')
+//    }
+//}
+//
+//sourceSets.java6.runtimeClasspath += sourceSets.main.runtimeClasspath
+//
+//reobf {
+//    jar {
+//        extraFiles 'extraSrg.srg'
+//    }
+//}
+//
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            pom.whenConfigured {
+//                pom -> pom.dependencies.removeAll { it.groupId == 'org.spongepowered' && it.artifactId == 'testmods' }
+//            }
+//        }
+//    }
+//}
+//
+//apply from: 'changelog.gradle'
+//
