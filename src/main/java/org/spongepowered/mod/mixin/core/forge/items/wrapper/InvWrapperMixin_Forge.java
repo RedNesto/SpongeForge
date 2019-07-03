@@ -36,68 +36,49 @@ import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
-import org.spongepowered.mod.bridge.forge.items.wrapper.InvWrapperBridge;
-import org.spongepowered.mod.item.inventory.fabric.IItemHandlerFabric;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
+// TODO mixin into all IItemHandler impl in forge
+// CombinedInvWrapper
+// EmptyHandler
+// EntityEquipmentInvWrapper
+// RangedWrapper
+// SidedInvWrapper
+// VanillaDoubleChestItemHandler
 @Mixin(InvWrapper.class)
-public abstract class InvWrapperMixin_Forge implements InventoryAdapter, TrackedInventoryBridge, InvWrapperBridge, InventoryAdapterBridge {
+public abstract class InvWrapperMixin_Forge implements InventoryAdapter, TrackedInventoryBridge, InventoryAdapterBridge {
 
-    private Fabric forgeImpl$fabric = new IItemHandlerFabric(((InvWrapper) (Object) this));
     @Nullable private Lens forgeImpl$lens = null;
     @Nullable private SlotCollection forgeImpl$slots;
     private int forgeImpl$initializedSize;
     private List<Inventory> forgeImpl$children = new ArrayList<Inventory>();
     private List<SlotTransaction> forgeImpl$capturedTransactions = new ArrayList<>();
 
-
-    @Override
-    public Inventory forgeBridge$getParent() {
-        return (Inventory) this; // TODO - this used to use a parent field, but the parent field has not been written to, ever...
-    }
-
     @Override
     public SlotProvider bridge$getSlotProvider() {
-        if (this.forgeImpl$slots == null || this.forgeImpl$initializedSize != this.bridge$getFabric().getSize()) {
-            this.forgeImpl$initializedSize = this.bridge$getFabric().getSize();
-            this.forgeImpl$slots = new SlotCollection.Builder().add(this.bridge$getFabric().getSize()).build();
+        if (this.forgeImpl$slots == null || this.forgeImpl$initializedSize != this.bridge$getFabric().fabric$getSize()) {
+            this.forgeImpl$initializedSize = this.bridge$getFabric().fabric$getSize();
+            this.forgeImpl$slots = new SlotCollection.Builder().add(this.bridge$getFabric().fabric$getSize()).build();
         }
         return this.forgeImpl$slots;
     }
 
-    @SuppressWarnings("Duplicates")
-    @Override
-    public Inventory bridge$getChild(final int index) {
-        if (index < 0 || index >= this.bridge$getRootLens().getChildren().size()) {
-            throw new IndexOutOfBoundsException("No child at index: " + index);
-        }
-        while (index >= this.forgeImpl$children.size()) {
-            this.forgeImpl$children.add(null);
-        }
-        Inventory child = this.forgeImpl$children.get(index);
-        if (child == null) {
-            child = (Inventory) this.bridge$getRootLens().getChildren().get(index).getAdapter(this.bridge$getFabric(), (Inventory) this);
-            this.forgeImpl$children.set(index, child);
-        }
-        return child;
-    }
-
     @Override
     public Lens bridge$getRootLens() {
-        if (this.forgeImpl$lens == null || this.forgeImpl$initializedSize != this.bridge$getFabric().getSize()) {
-            this.forgeImpl$initializedSize = this.bridge$getFabric().getSize();
-            this.forgeImpl$lens = new OrderedInventoryLensImpl(0, this.forgeImpl$fabric.getSize(), 1, this.bridge$getSlotProvider());
+        if (this.forgeImpl$lens == null || this.forgeImpl$initializedSize != this.bridge$getFabric().fabric$getSize()) {
+            this.forgeImpl$initializedSize = this.bridge$getFabric().fabric$getSize();
+            this.forgeImpl$lens = new OrderedInventoryLensImpl(0, this.bridge$getFabric().fabric$getSize(), 1, this.bridge$getSlotProvider());
         }
         return this.forgeImpl$lens;
     }
 
     @Override
     public Fabric bridge$getFabric() {
-        return this.forgeImpl$fabric;
+        return ((Fabric) this);
     }
 
     @Override

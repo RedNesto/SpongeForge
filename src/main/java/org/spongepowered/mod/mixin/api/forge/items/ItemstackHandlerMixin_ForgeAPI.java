@@ -25,44 +25,11 @@
 package org.spongepowered.mod.mixin.api.forge.items;
 
 import net.minecraftforge.items.ItemStackHandler;
-import org.spongepowered.api.item.inventory.Inventory;
-import org.spongepowered.api.item.inventory.Slot;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
-import org.spongepowered.asm.mixin.Intrinsic;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.common.item.inventory.adapter.impl.DefaultImplementedInventoryAdapter;
-import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
+import org.spongepowered.common.item.inventory.adapter.impl.DefaultImplementedAdapterInventory;
 
-import javax.annotation.Nullable;
-
-@SuppressWarnings("unchecked")
 @Mixin(ItemStackHandler.class)
-@Implements(@Interface(iface = Inventory.class, prefix = "inventory$"))
-public abstract class ItemstackHandlerMixin_ForgeAPI implements Inventory, DefaultImplementedInventoryAdapter {
-
-    @Nullable private Iterable<Slot> forgeAPI$slotIterator;
-
-    @Override
-    public Inventory parent() {
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends Inventory> Iterable<T> slots() {
-        if (this.forgeAPI$slotIterator == null) {
-            // the bridge$getSlotProvider will lazily initialize the slot collection for us
-            this.forgeAPI$slotIterator = ((SlotCollection) this.bridge$getSlotProvider()).getIterator(this);
-        }
-        return (Iterable<T>) this.forgeAPI$slotIterator;
-    }
-
-    @Intrinsic
-    public void inventory$clear() {
-        this.bridge$getFabric().clear();
-    }
-
+public abstract class ItemstackHandlerMixin_ForgeAPI implements DefaultImplementedAdapterInventory.WithClear {
 
 
 }
