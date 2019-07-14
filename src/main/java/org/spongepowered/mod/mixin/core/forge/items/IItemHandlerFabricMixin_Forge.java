@@ -41,12 +41,12 @@ import java.util.Collection;
 public interface IItemHandlerFabricMixin_Forge extends Fabric, IItemHandler, InventoryBridge {
 
     @Override
-    default Collection<?> fabric$allInventories() {
+    default Collection<InventoryBridge> fabric$allInventories() {
         return ImmutableSet.of(this);
     }
 
     @Override
-    default IItemHandler fabric$get(int index) {
+    default InventoryBridge fabric$get(int index) {
         return this;
     }
 
