@@ -22,14 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.mod.mixin.api.forge.items;
+package org.spongepowered.mod.mixin.core.forge.items;
 
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.IItemHandler;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.common.item.inventory.adapter.impl.DefaultImplementedAdapterInventory;
+import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
+import org.spongepowered.common.item.inventory.lens.Fabric;
+import org.spongepowered.common.item.inventory.lens.Lens;
+import org.spongepowered.common.item.inventory.lens.SlotProvider;
+import org.spongepowered.common.item.inventory.lens.impl.ReusableLens;
 
-@Mixin(ItemStackHandler.class)
-public abstract class ItemstackHandlerMixin_ForgeAPI implements DefaultImplementedAdapterInventory.WithClear {
+/**
+ * Default implements {@link InventoryAdapter} for {@link IItemHandler} using {@link ReusableLens}es.
+ */
+@Mixin(IItemHandler.class)
+public interface IItemHandlerInventoryAdapterMixin_Forge extends InventoryAdapter {
 
+    @Override
+    default SlotProvider bridge$getSlotProvider() {
+        return ReusableLens.defaultReusableLens(this).getSlots();
+    }
+
+    @Override
+    default Lens bridge$getRootLens() {
+        return ReusableLens.defaultReusableLens(this).getLens();
+    }
+
+    @Override
+    default Fabric bridge$getFabric() {
+        return (Fabric) this;
+    }
 
 }
