@@ -51,7 +51,7 @@
         "forge.items.ItemstackHandlerMixin_Forge",
         "forge.items.VanillaInventoryCodeHooksMixin_Forge",
         "forge.items.TraitInventoryAdapterMixin_Forge",
-        "forge.items.IItemHandlerInventoryAdapterMixin_Forge",
+        "forge.items.DefaultInventoryAdaptersMixin_Forge",
         "forge.items.IItemHandlerFabricMixin_Forge",
         "forge.registries.BlockDummyAirMixin_Forge",
         "item.ItemDyeMixin_Forge",
