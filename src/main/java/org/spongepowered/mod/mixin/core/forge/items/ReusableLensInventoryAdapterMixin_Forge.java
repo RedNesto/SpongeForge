@@ -110,7 +110,7 @@ public abstract class ReusableLensInventoryAdapterMixin_Forge implements Reusabl
     @Override
     public Lens bridge$getRootLens() {
         if (this.impl$lens == null || this.needsUpdate()) {
-            this.impl$lens = this.bridge$generateLens();
+            this.impl$lens = this.bridge$generateLens(this.bridge$getSlotProvider());
         }
         return this.impl$lens;
     }
