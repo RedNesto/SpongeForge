@@ -43,38 +43,15 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 @Mixin(ItemStackHandler.class)
-public abstract class ItemstackHandlerMixin_Forge implements InventoryAdapter, TrackedInventoryBridge, InventoryAdapterBridge {
+public abstract class ItemstackHandlerMixin_Forge implements TrackedInventoryBridge {
 
-    @Nullable private SlotCollection forgeImpl$slots;
-    @Nullable private Lens forgeImpl$lens;
-    private List<Inventory> forgeImpl$children = new ArrayList<Inventory>();
+    // TODO for the other IItemHandlers impls. too?
+
     private List<SlotTransaction> forgeImpl$capturedTransactions = new ArrayList<>();
-
-    @Override
-    public SlotProvider bridge$getSlotProvider() {
-        if (this.forgeImpl$slots == null) {
-            this.forgeImpl$slots = new SlotCollection.Builder().add(this.bridge$getFabric().fabric$getSize()).build();
-        }
-        return this.forgeImpl$slots;
-    }
-
-    @Override
-    public Lens bridge$getRootLens() {
-        if (this.forgeImpl$lens == null) {
-            this.forgeImpl$lens = new OrderedInventoryLensImpl(0, this.bridge$getFabric().fabric$getSize(), 1, this.bridge$getSlotProvider());
-        }
-        return this.forgeImpl$lens;
-    }
-
-    @Override
-    public Fabric bridge$getFabric() {
-        return (Fabric) this;
-    }
 
     @Override
     public List<SlotTransaction> bridge$getCapturedSlotTransactions() {
         return this.forgeImpl$capturedTransactions;
     }
-
 
 }
