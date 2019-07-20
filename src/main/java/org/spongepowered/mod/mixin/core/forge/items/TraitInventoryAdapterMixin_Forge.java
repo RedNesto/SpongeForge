@@ -24,6 +24,7 @@
  */
 package org.spongepowered.mod.mixin.core.forge.items;
 
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.VanillaDoubleChestItemHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
@@ -47,6 +48,7 @@ import org.spongepowered.common.item.inventory.util.InventoryUtil;
 import javax.annotation.Nullable;
 
 /**
+ * Mixin into all known forge {@link IItemHandler}s.
  * Implement {@link InventoryAdapter#bridge$getSlotProvider()}
  * and {@link InventoryAdapter#bridge$getRootLens()}
  * using a {@link ReusableLensProvider} or {@link LensProviderBridge}
@@ -60,7 +62,7 @@ import javax.annotation.Nullable;
         SidedInvWrapper.class,
         VanillaDoubleChestItemHandler.class
 }, priority = 999)
-public abstract class ReusableLensInventoryAdapterMixin_Forge implements ReusableLensInventoryAdapaterBridge, InventoryBridge {
+public abstract class TraitInventoryAdapterMixin_Forge implements ReusableLensInventoryAdapaterBridge, InventoryBridge {
 
     @Nullable private ReusableLens<?> impl$reusableLens = null;
     private int initializedSize;

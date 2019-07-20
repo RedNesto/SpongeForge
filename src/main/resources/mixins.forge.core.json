@@ -50,7 +50,7 @@
         "forge.fluids.FluidRegistryMixin_Forge",
         "forge.items.ItemstackHandlerMixin_Forge",
         "forge.items.VanillaInventoryCodeHooksMixin_Forge",
-        "forge.items.ReusableLensInventoryAdapterMixin_Forge",
+        "forge.items.TraitInventoryAdapterMixin_Forge",
         "forge.registries.BlockDummyAirMixin_Forge",
         "item.ItemDyeMixin_Forge",
         "item.ItemLilyPadMixin_Forge",
